@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { LOGIN, PUBLIC_ROUTES, ROOT } from "../utils/routes";
+import { PUBLIC_ROUTES, ROOT } from "./utils/routes";
 
 export async function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get("refreshToken");
@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname === ROOT) {
-    return NextResponse.redirect(new URL(LOGIN, request.nextUrl));
+    return NextResponse.redirect(new URL(PUBLIC_ROUTES[0], request.nextUrl));
   }
 
   const isPublicRoute = PUBLIC_ROUTES.find((route) =>
@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
   );
 
   if (!refreshToken && !isPublicRoute)
-    return NextResponse.redirect(new URL(LOGIN, request.nextUrl));
+    return NextResponse.redirect(new URL(PUBLIC_ROUTES[0], request.nextUrl));
 
   return NextResponse.next();
 }
