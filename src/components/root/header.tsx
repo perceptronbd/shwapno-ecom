@@ -28,7 +28,7 @@ const Header = () => {
         LinkComponent={Link}
         Logo={
           <Image
-            src="shwapno-logo.svg"
+            src="/shwapno-logo.svg"
             alt="Shwapno Logo"
             width={80}
             height={20}

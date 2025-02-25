@@ -1,17 +1,60 @@
 "use client";
+
 import { useDebounce } from "@/hooks/useDebounce";
-import { Input } from "@/shared-components";
+import { useGetBranchProductsQuery } from "@/stores/services/products/product.service";
+import {
+  Input,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/shared-components";
 import { Loader2, Search, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { BRANCH_ID } from "@/lib/constants";
+import Image from "next/image";
+import { Product } from "@/lib/types/products";
 
 const Root = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [searchResults, setSearchResults] = useState([]);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const {
+    data: products,
+    isLoading: productsLoading,
+    error: productsError,
+  } = useGetBranchProductsQuery(BRANCH_ID);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const searchContainerRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchTerm, 500);
+
+  // Get unique categories from products
+  const categories = useMemo(() => {
+    if (!products) return [];
+    const uniqueCategories = new Set(
+      products.map((product) => product.category),
+    );
+    return ["all", ...Array.from(uniqueCategories)];
+  }, [products]);
+
+  // Filter products based on search term and category
+  const filteredProducts = useMemo(() => {
+    if (!products) return [];
+    return products.filter((product) => {
+      const matchesSearch =
+        !debouncedSearch ||
+        product.name.toLowerCase().includes(debouncedSearch.toLowerCase());
+      const matchesCategory =
+        activeCategory === "all" || product.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [products, debouncedSearch, activeCategory]);
+
+  // Filter products based on search term
+  const searchResults: Product[] =
+    products?.filter((product) => {
+      if (!debouncedSearch) return false;
+      return product.name.toLowerCase().includes(debouncedSearch.toLowerCase());
+    }) || [];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -31,47 +74,13 @@ const Root = () => {
 
   const clearSearch = () => {
     setSearchTerm("");
-    setSearchResults([]);
-    setError(null);
   };
-
-  useEffect(() => {
-    const searchProducts = async () => {
-      if (!debouncedSearch) {
-        setSearchResults([]);
-        return;
-      }
-
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        // Replace with your actual API endpoint
-        const response = await fetch(
-          `/api/products/search?q=${debouncedSearch}`,
-        );
-
-        if (!response.ok) {
-          throw new Error("Search failed");
-        }
-
-        const data = await response.json();
-        setSearchResults(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    searchProducts();
-  }, [debouncedSearch]);
 
   return (
     <div className="p-4" ref={searchContainerRef}>
       <div className="relative max-w-full">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          {isLoading ? (
+          {productsLoading ? (
             <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
           ) : (
             <Search className="h-5 w-5 text-gray-400" />
@@ -92,19 +101,103 @@ const Root = () => {
           </button>
         )}
       </div>
-
-      {error && <div className="mt-4 text-sm text-red-500">{error}</div>}
-
-      {searchResults.length > 0 && (
-        <div className="mt-4 space-y-2">
-          {searchResults.map((result: any) => (
-            <div key={result.id} className="rounded border p-2">
-              {result.name}
+      {productsError && (
+        <div className="mt-4 text-sm text-red-500">
+          {productsError instanceof Error
+            ? productsError.message
+            : "Failed to load products"}
+        </div>
+      )}
+      {debouncedSearch && searchResults.length > 0 && (
+        <div className="absolute z-10 mt-2 w-[calc(100vw-30px)] rounded border bg-white shadow-md">
+          {searchResults.map((product) => (
+            <div key={product.id} className="rounded border p-2">
+              <div className="flex items-center gap-4">
+                {product.imgURL && (
+                  <Image
+                    src={product.imgURL}
+                    alt={product.name}
+                    width={50}
+                    height={50}
+                    className="object-cover"
+                  />
+                )}
+                <div>
+                  <h3 className="font-medium">{product.name}</h3>
+                  <p className="text-sm text-gray-600">৳{product.price}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
       )}
+      {debouncedSearch && searchResults.length === 0 && (
+        <div className="mt-4 text-sm text-gray-500">
+          No products found matching &quot;{debouncedSearch}&quot;
+        </div>
+      )}
+
+      <section className="mt-8">
+        <Tabs defaultValue="all" onValueChange={setActiveCategory}>
+          <TabsList className="mb-4">
+            {categories.map((category) => (
+              <TabsTrigger
+                key={category}
+                value={category ?? ""}
+                className="capitalize"
+              >
+                {category}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          {categories.map((category) => (
+            <TabsContent key={category} value={category ?? ""}>
+              {productsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+              ) : (
+                <div className="flex w-full flex-wrap gap-4">
+                  {filteredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              )}
+
+              {!productsLoading && filteredProducts.length === 0 && (
+                <div className="py-8 text-center text-gray-500">
+                  No products found
+                </div>
+              )}
+            </TabsContent>
+          ))}
+        </Tabs>
+      </section>
     </div>
+  );
+};
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard = ({ product }: ProductCardProps) => {
+  return (
+    <section className="rounded-lg border bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+      {product.imgURL && (
+        <div className="relative mb-4 aspect-square">
+          <Image
+            src={product.imgURL}
+            alt={product.name}
+            fill
+            className="rounded-md object-cover"
+          />
+        </div>
+      )}
+      <h3 className="mb-2 font-medium">{product.name}</h3>
+      <p className="text-sm text-gray-600">৳{product.price}</p>
+    </section>
   );
 };
 
