@@ -5,8 +5,8 @@ import { Sidebar } from "@/shared-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import TopBar from "./top-bar";
 import Image from "next/image";
+import TopBar from "./top-bar";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
