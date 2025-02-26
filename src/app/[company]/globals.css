@@ -12,6 +12,7 @@ root {
 html,
 body {
   font-family: "Montserrat", sans-serif;
+  color: var(--foreground);
 }
 
 body {

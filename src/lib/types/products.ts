@@ -1,7 +1,8 @@
 export interface Product {
   id: string;
-  name: string;
   barcode: string | null;
+  name: string;
+  description: string | null;
   price: string;
   imgURL: string | null;
   category: string | null;
