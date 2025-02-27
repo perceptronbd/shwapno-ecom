@@ -10,7 +10,9 @@ export const useProducts = (products: Product[] | undefined) => {
   const categories = useMemo(() => {
     if (!products) return [];
     const uniqueCategories = new Set(
-      products.map((product) => product.category),
+      products
+        .filter((product) => product.category !== null)
+        .map((product) => product.category),
     );
     return ["all", ...Array.from(uniqueCategories)];
   }, [products]);

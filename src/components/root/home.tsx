@@ -42,39 +42,6 @@ const Home = () => {
         </div>
       )}
 
-      {/* {debouncedSearch && searchResults.length > 0 && (
-        <div className="absolute z-10 mt-2 w-[calc(100vw-30px)] rounded border bg-white">
-          {searchResults.map((product) => (
-            <div key={product.id} className="flex gap-4 border p-2">
-              {product.imgURL ? (
-                <Image
-                  src={product.imgURL}
-                  alt={product.name}
-                  width={50}
-                  height={50}
-                  className="object-cover"
-                />
-              ) : (
-                <FileImage
-                  size={50}
-                  className="text-neutral-400"
-                  strokeWidth={1.5}
-                />
-              )}
-
-              <div>
-                <Text weight="semi_bold" className="text-neutral-900">
-                  {product.name}
-                </Text>
-                <Text weight="medium" className="text-neutral-400">
-                  ৳{product.price}
-                </Text>
-              </div>
-            </div>
-          ))}
-        </div>
-      )} */}
-
       <section className="mt-8">
         <Tabs defaultValue="all" onValueChange={setActiveCategory}>
           <TabsList className="mb-4">
