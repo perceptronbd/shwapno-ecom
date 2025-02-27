@@ -2,13 +2,25 @@
 
 import { BRANCH_ID } from "@/lib/constants";
 import { useGetBranchProductsQuery } from "@/stores/services/products/product.service";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared-components";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  Drawer,
+} from "@/shared-components";
 import { Loader2 } from "lucide-react";
 import { useProducts } from "@/hooks/useProduct";
 import { SearchBar } from "./search-bar";
 import { ProductCard } from "./product-card";
+import { Product } from "@/lib/types/products";
+import { useState } from "react";
+import { ProductCardDrawer } from "./product-card-drawer";
 
 const Home = () => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     data: products,
     isLoading: productsLoading,
@@ -24,6 +36,16 @@ const Home = () => {
     // searchResults,
     // debouncedSearch,
   } = useProducts(products);
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsOpen(false);
+    setSelectedProduct(null);
+  };
 
   return (
     <>
@@ -65,7 +87,14 @@ const Home = () => {
               ) : (
                 <div className="columns-2 space-y-4">
                   {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <button
+                      key={product.id}
+                      onClick={() => handleProductClick(product)}
+                      className="w-full cursor-pointer text-left"
+                      aria-label={`View details for ${product.name}`}
+                    >
+                      <ProductCard product={product} />
+                    </button>
                   ))}
                 </div>
               )}
@@ -79,6 +108,14 @@ const Home = () => {
           ))}
         </Tabs>
       </section>
+      <Drawer
+        isOpen={isOpen}
+        onClose={handleCloseDrawer}
+        className="h-[90%]"
+        isCrossVisible={false}
+      >
+        {selectedProduct && <ProductCardDrawer product={selectedProduct} />}
+      </Drawer>
     </>
   );
 };

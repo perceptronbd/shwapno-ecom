@@ -18,19 +18,24 @@ export const SearchBar = ({
   onClearSearch,
   isLoading,
 }: SearchBarProps) => {
-  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchContainerRef = useRef<HTMLFormElement>(null);
   useClickOutside(searchContainerRef, onClearSearch);
 
   return (
-    <div className="relative max-w-full" ref={searchContainerRef}>
-      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+    <form
+      className="relative max-w-full"
+      ref={searchContainerRef}
+      onSubmit={(e) => e.preventDefault()}
+    >
+      <label className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
         {isLoading ? (
           <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
         ) : (
           <Search className="h-5 w-5 text-gray-400" />
         )}
-      </div>
+      </label>
       <Input
+        list="search-results"
         className="w-full pl-10 pr-10"
         placeholder="Search products..."
         value={searchTerm}
@@ -38,12 +43,14 @@ export const SearchBar = ({
       />
       {searchTerm && (
         <button
+          type="reset"
           onClick={onClearSearch}
           className="absolute inset-y-0 right-0 flex items-center pr-3"
+          aria-label="Clear search"
         >
           <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
         </button>
       )}
-    </div>
+    </form>
   );
 };
