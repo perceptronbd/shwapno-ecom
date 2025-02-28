@@ -9,12 +9,12 @@ export const navLinks = {
     },
     {
       name: "Cart",
-      href: "/cart",
+      href: "/shwapno-nurerchala/carts",
       Icon: ShoppingCart,
     },
     {
       name: "Orders",
-      href: "/order",
+      href: "/shwapno-nurerchala/order",
       Icon: Package,
     },
   ],

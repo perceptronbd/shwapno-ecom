@@ -19,20 +19,29 @@ export const cartSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addMatcher(
-      cartApi.endpoints.addToCart.matchFulfilled,
-      (state, { payload }) => {
-        if (payload.data?.sessionId) {
-          state.sessionId = payload.data.sessionId;
-          if (typeof window !== "undefined") {
-            localStorage.setItem("cartSessionId", payload.data.sessionId);
+    builder
+      .addMatcher(
+        cartApi.endpoints.addToCart.matchFulfilled,
+        (state, { payload }) => {
+          if (payload.data?.sessionId) {
+            state.sessionId = payload.data.sessionId;
+            if (typeof window !== "undefined") {
+              localStorage.setItem("cartSessionId", payload.data.sessionId);
+            }
           }
-        }
-        if (payload.data?.items) {
-          state.items = payload.data.items;
-        }
-      },
-    );
+          if (payload.data?.items) {
+            state.items = payload.data.items;
+          }
+        },
+      )
+      .addMatcher(
+        cartApi.endpoints.getCart.matchFulfilled,
+        (state, { payload }) => {
+          if (payload.data?.items) {
+            state.items = payload.data.items;
+          }
+        },
+      );
   },
 });
 
