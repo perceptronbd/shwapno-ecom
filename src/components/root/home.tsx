@@ -1,7 +1,7 @@
 "use client";
 
 import { BRANCH_ID } from "@/lib/constants";
-import { useGetBranchProductsQuery } from "@/stores/services/products/product.service";
+import { useGetBranchProductsQuery } from "@/stores/services/product.service";
 import {
   Tabs,
   TabsList,
@@ -13,13 +13,21 @@ import { Loader2 } from "lucide-react";
 import { useProducts } from "@/hooks/useProduct";
 import { SearchBar } from "./search-bar";
 import { ProductCard } from "./product-card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProductCardDrawer } from "./product-card-drawer";
 import { Product } from "@/stores/states/product.state";
+import { useAppDispatch } from "@/stores/hook";
+import { initializeCart } from "@/stores/slices/cart.slice";
 
 const Home = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(initializeCart());
+  }, [dispatch]);
 
   const {
     data: products,

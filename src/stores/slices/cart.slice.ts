@@ -1,0 +1,44 @@
+import { createSlice } from "@reduxjs/toolkit";
+import { CartState } from "../states/cart.state";
+import { cartApi } from "../services/cart.service";
+import { RootState } from "..";
+
+const initialState: CartState = {
+  sessionId: null,
+  items: [],
+};
+
+export const cartSlice = createSlice({
+  name: "cart",
+  initialState,
+  reducers: {
+    initializeCart: (state) => {
+      if (typeof window !== "undefined") {
+        state.sessionId = localStorage.getItem("cartSessionId");
+      }
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      cartApi.endpoints.addToCart.matchFulfilled,
+      (state, { payload }) => {
+        if (payload.data?.sessionId) {
+          state.sessionId = payload.data.sessionId;
+          if (typeof window !== "undefined") {
+            localStorage.setItem("cartSessionId", payload.data.sessionId);
+          }
+        }
+        if (payload.data?.items) {
+          state.items = payload.data.items;
+        }
+      },
+    );
+  },
+});
+
+export const { initializeCart } = cartSlice.actions;
+export const selectCartSessionId = (state: { cart: CartState }) =>
+  state.cart.sessionId;
+export const selectCartItems = (state: RootState) => state.cart.items;
+
+export default cartSlice.reducer;

@@ -1,6 +1,9 @@
 "use client";
 
 import { Button, Input, Text } from "@/shared-components";
+import { useAppSelector } from "@/stores/hook";
+import { useAddToCartMutation } from "@/stores/services/cart.service";
+import { selectCartSessionId } from "@/stores/slices/cart.slice";
 import { Product } from "@/stores/states/product.state";
 import { ImageOff, Minus, Plus } from "lucide-react";
 import Image from "next/image";
@@ -12,6 +15,9 @@ interface ProductCardProps {
 
 export const ProductCardDrawer = ({ product }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1);
+
+  const sessionId = useAppSelector(selectCartSessionId);
+  const [addToCart, { isLoading }] = useAddToCartMutation();
 
   const handleIncrement = () => {
     setQuantity((prev) => prev + 1);
@@ -27,6 +33,20 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
     const value = parseInt(e.target.value);
     if (value >= 1) {
       setQuantity(value);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({
+        productId: product.id,
+        quantity,
+        ...(sessionId && { sessionId }),
+      }).unwrap();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
     }
   };
 
@@ -130,7 +150,13 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
         </section>
         <nav className="grid grid-cols-2 gap-4">
           <Button>Buy Now</Button>
-          <Button variant="outline">Add to Cart</Button>
+          <Button
+            variant="outline"
+            loading={isLoading}
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </Button>
         </nav>
       </footer>
     </article>
