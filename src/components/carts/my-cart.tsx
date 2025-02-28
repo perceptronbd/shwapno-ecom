@@ -2,17 +2,27 @@
 
 import { Button, Text } from "@/shared-components";
 import { CartItemRow } from "./carts-item";
-import { useAppSelector } from "@/stores/hook";
+import { useAppDispatch, useAppSelector } from "@/stores/hook";
 import { useGetCartQuery } from "@/stores/services/cart.service";
 import {
+  initializeCart,
   selectCartItems,
   selectCartSessionId,
 } from "@/stores/slices/cart.slice";
 import { LoadingCart } from "./loading-cart";
 import { EmptyCart } from "./empty-cart";
+import { useEffect, useState } from "react";
 
 export const MyCart = () => {
+  const dispatch = useAppDispatch();
+  const [isInitialized, setIsInitialized] = useState(false);
   const sessionId = useAppSelector(selectCartSessionId);
+
+  useEffect(() => {
+    dispatch(initializeCart());
+    setIsInitialized(true);
+  }, [dispatch]);
+
   const { isLoading } = useGetCartQuery(sessionId!, {
     skip: !sessionId,
   });
@@ -23,7 +33,7 @@ export const MyCart = () => {
     0,
   );
 
-  if (isLoading) return <LoadingCart />;
+  if (isLoading || !isInitialized) return <LoadingCart />;
 
   return cartItems.length === 0 ? (
     <EmptyCart />
