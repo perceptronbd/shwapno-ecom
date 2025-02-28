@@ -8,14 +8,14 @@ export const navLinks = {
       Icon: Home,
     },
     {
-      name: "Orders",
-      href: "/order",
-      Icon: Package,
-    },
-    {
       name: "Cart",
       href: "/cart",
       Icon: ShoppingCart,
+    },
+    {
+      name: "Orders",
+      href: "/order",
+      Icon: Package,
     },
   ],
   bottomLinks: [],
