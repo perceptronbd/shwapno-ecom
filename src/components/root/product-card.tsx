@@ -9,7 +9,7 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   return (
-    <article className="w-full break-inside-avoid-column rounded-md border bg-white p-2 shadow-sm transition-shadow hover:shadow-md">
+    <article className="w-full break-inside-avoid-column rounded-md bg-white p-2 shadow-sm transition-shadow hover:shadow-md">
       <figure className="relative h-auto w-full pb-2">
         {product.imgURL ? (
           <Image

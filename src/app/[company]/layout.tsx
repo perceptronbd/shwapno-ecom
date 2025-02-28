@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-background-primary">
         <Header />
         <ReduxProvider>{children}</ReduxProvider>
       </body>
