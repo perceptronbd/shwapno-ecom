@@ -1,5 +1,5 @@
-import { Product } from "@/lib/types/products";
 import { Text } from "@/shared-components";
+import { Product } from "@/stores/states/product.state";
 import { ImageOff } from "lucide-react";
 import Image from "next/image";
 

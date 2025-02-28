@@ -13,9 +13,9 @@ import { Loader2 } from "lucide-react";
 import { useProducts } from "@/hooks/useProduct";
 import { SearchBar } from "./search-bar";
 import { ProductCard } from "./product-card";
-import { Product } from "@/lib/types/products";
 import { useState } from "react";
 import { ProductCardDrawer } from "./product-card-drawer";
+import { Product } from "@/stores/states/product.state";
 
 const Home = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
