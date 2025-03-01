@@ -1,5 +1,6 @@
 export const TAG_TYPES = {
   CART: "Cart",
+  ORDER: "Order",
 } as const;
 
 export const TAG_TYPES_LIST = Object.values(TAG_TYPES);

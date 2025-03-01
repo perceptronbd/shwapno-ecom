@@ -7,7 +7,8 @@ export const ROUTES = {
   COMPANY,
   HOME: `${COMPANY}`,
   CART: `${COMPANY}/carts`,
-  ORDERS: `${COMPANY}/order`,
+  CHECKOUT: `${COMPANY}/carts/checkout`,
+  ORDERS: `${COMPANY}/orders`,
 } as const;
 
 export type AppRoutes = typeof ROUTES;

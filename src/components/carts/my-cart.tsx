@@ -12,8 +12,11 @@ import {
 import { LoadingCart } from "./loading-cart";
 import { EmptyCart } from "./empty-cart";
 import { useEffect, useState } from "react";
+import { ROUTES } from "@/utils/routes";
+import { useRouter } from "next/navigation";
 
 export const MyCart = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
   const sessionId = useAppSelector(selectCartSessionId);
@@ -50,6 +53,10 @@ export const MyCart = () => {
     const quantity = itemQuantities[item.id] || item.quantity;
     return total + parseFloat(item.price.toString()) * quantity;
   }, 0);
+
+  const handlePlaceOrder = () => {
+    router.push(ROUTES.CHECKOUT);
+  };
 
   if (isLoading || !isInitialized) return <LoadingCart />;
 
@@ -96,7 +103,7 @@ export const MyCart = () => {
           </output>
         </div>
         <nav>
-          <Button className="w-full" size="lg">
+          <Button className="w-full" size="lg" onClick={handlePlaceOrder}>
             Place Order
           </Button>
         </nav>

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "My Cart",
 };
 
-const Carts = () => {
+const CartsPage = () => {
   return (
     <div className="container mx-auto p-4">
       <Suspense fallback={<LoadingCart />}>
@@ -18,4 +18,4 @@ const Carts = () => {
   );
 };
 
-export default Carts;
+export default CartsPage;

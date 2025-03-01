@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { CartState } from "../states/cart.state";
 import { cartApi } from "../services/cart.service";
 import { RootState } from "..";
+import { orderApi } from "../services/order.service";
 
 const initialState: CartState = {
   sessionId: null,
@@ -41,7 +42,13 @@ export const cartSlice = createSlice({
             state.items = payload.data.items;
           }
         },
-      );
+      )
+      .addMatcher(orderApi.endpoints.createOrder.matchFulfilled, (state) => {
+        state.items = [];
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("cartSessionId");
+        }
+      });
   },
 });
 
