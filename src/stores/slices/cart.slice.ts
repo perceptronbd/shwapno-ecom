@@ -6,6 +6,7 @@ import { orderApi } from "../services/order.service";
 
 const initialState: CartState = {
   sessionId: null,
+  customerId: null,
   items: [],
 };
 
@@ -43,12 +44,16 @@ export const cartSlice = createSlice({
           }
         },
       )
-      .addMatcher(orderApi.endpoints.createOrder.matchFulfilled, (state) => {
-        state.items = [];
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("cartSessionId");
-        }
-      });
+      .addMatcher(
+        orderApi.endpoints.createOrder.matchFulfilled,
+        (state, { payload }) => {
+          state.items = [];
+          if (typeof window !== "undefined" && payload.data?.customer?.id) {
+            state.customerId = payload.data.customer.id;
+            localStorage.setItem("customerId", payload.data.customer.id);
+          }
+        },
+      );
   },
 });
 

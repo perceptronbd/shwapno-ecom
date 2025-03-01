@@ -19,6 +19,7 @@ export interface Cart {
 
 export interface CartState {
   sessionId: string | null;
+  customerId: string | null;
   items: CartItem[];
 }
 

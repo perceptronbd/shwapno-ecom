@@ -50,7 +50,6 @@ export const Checkout = () => {
           sessionId,
         },
       }).unwrap();
-      console.log("result", result);
 
       if (result.success) {
         router.push(

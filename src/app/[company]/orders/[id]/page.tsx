@@ -60,7 +60,7 @@ export default function OrderDetailsPage() {
               : {orderDetails.customer.mobile}
             </Text>
             <Text className="text-neutral-400">Address</Text>
-            <Text weight="medium" className="col-span-2">
+            <Text weight="medium" className="col-span-2 break-words">
               : {orderDetails.customer.address}
             </Text>
           </div>
