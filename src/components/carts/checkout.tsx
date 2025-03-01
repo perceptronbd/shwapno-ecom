@@ -53,7 +53,9 @@ export const Checkout = () => {
       console.log("result", result);
 
       if (result.success) {
-        router.push(ROUTES.ORDERS);
+        router.push(
+          `${ROUTES.ORDERS}/${result.data?.id}?orderData=${encodeURIComponent(JSON.stringify(result.data))}`,
+        );
       }
     } catch (error) {
       console.error("Order creation failed:", error);

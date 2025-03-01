@@ -16,6 +16,7 @@ export interface OrderItem {
   orderId: string;
   productId: string;
   quantity: number;
+  imgURL?: string;
   price: string;
   createdAt: string;
   updatedAt: string;
