@@ -56,7 +56,7 @@ export const MyCart = () => {
   return cartItems.length === 0 ? (
     <EmptyCart />
   ) : (
-    <section className="flex h-[calc(100dvh-100px)] flex-col justify-between">
+    <section className="relative">
       <aside>
         <header>
           <Text variant="titleLarge" weight="bold" className="mb-6">
@@ -75,10 +75,12 @@ export const MyCart = () => {
               }
             />
           ))}
+
+          <div className="h-24 w-full" />
         </section>
       </aside>
 
-      <footer className="mt-8 flex items-center justify-between border-t pt-4">
+      <footer className="fixed bottom-0 left-0 flex w-full items-center justify-between rounded-t-md border bg-white p-4">
         <div>
           <Text
             variant="titleMedium"
@@ -93,7 +95,7 @@ export const MyCart = () => {
             </Text>
           </output>
         </div>
-        <nav className="mt-4">
+        <nav>
           <Button className="w-full" size="lg">
             Place Order
           </Button>
