@@ -7,6 +7,7 @@ import { selectCartSessionId } from "@/stores/slices/cart.slice";
 import { Product } from "@/stores/states/product.state";
 import { ImageOff, Minus, Plus } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface ProductCardProps {
@@ -14,6 +15,7 @@ interface ProductCardProps {
 }
 
 export const ProductCardDrawer = ({ product }: ProductCardProps) => {
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
 
   const sessionId = useAppSelector(selectCartSessionId);
@@ -43,6 +45,21 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
         quantity,
         ...(sessionId && { sessionId }),
       }).unwrap();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  };
+
+  const handleBuyNow = async () => {
+    try {
+      await addToCart({
+        productId: product.id,
+        quantity,
+        ...(sessionId && { sessionId }),
+      }).unwrap();
+      router.push("/shwapno-nurerchala/carts");
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -149,7 +166,9 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
           </output>
         </section>
         <nav className="grid grid-cols-2 gap-4">
-          <Button>Buy Now</Button>
+          <Button onClick={handleBuyNow} loading={isLoading}>
+            Buy Now
+          </Button>
           <Button
             variant="outline"
             loading={isLoading}
