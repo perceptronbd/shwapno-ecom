@@ -51,6 +51,16 @@ export const cartSlice = createSlice({
           if (typeof window !== "undefined" && payload.data?.customer?.id) {
             state.customerId = payload.data.customer.id;
             localStorage.setItem("customerId", payload.data.customer.id);
+            const { firstName, email, mobile, address } = payload.data.customer;
+            localStorage.setItem(
+              "customerInfo",
+              JSON.stringify({
+                firstName,
+                email,
+                mobile,
+                address,
+              }),
+            );
           }
         },
       );

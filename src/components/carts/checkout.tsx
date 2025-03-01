@@ -12,6 +12,7 @@ import { selectCartSessionId } from "@/stores/slices/cart.slice";
 import { ROUTES } from "@/utils/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 export const Checkout = () => {
@@ -22,10 +23,23 @@ export const Checkout = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
   });
+
+  useEffect(() => {
+    // Load saved customer info
+    const savedCustomerInfo = localStorage.getItem("customerInfo");
+    if (savedCustomerInfo) {
+      const customerInfo = JSON.parse(savedCustomerInfo);
+      setValue("name", customerInfo.firstName);
+      setValue("email", customerInfo.email);
+      setValue("mobile", customerInfo.mobile);
+      setValue("address", customerInfo.address);
+    }
+  }, [setValue]);
 
   const onSubmit = async (data: CheckoutFormData) => {
     if (!sessionId) {
