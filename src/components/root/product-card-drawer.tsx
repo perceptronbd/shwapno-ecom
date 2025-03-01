@@ -5,6 +5,7 @@ import { useAppSelector } from "@/stores/hook";
 import { useAddToCartMutation } from "@/stores/services/cart.service";
 import { selectCartSessionId } from "@/stores/slices/cart.slice";
 import { Product } from "@/stores/states/product.state";
+import { ROUTES } from "@/utils/routes";
 import { ImageOff, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -59,7 +60,7 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
         quantity,
         ...(sessionId && { sessionId }),
       }).unwrap();
-      router.push("/shwapno-nurerchala/carts");
+      router.push(ROUTES.CART);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.log(error.message);

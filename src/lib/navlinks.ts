@@ -1,20 +1,21 @@
+import { ROUTES } from "@/utils/routes";
 import { Home, ShoppingCart, Package } from "lucide-react";
 
 export const navLinks = {
   topLinks: [
     {
       name: "Home",
-      href: "/shwapno-nurerchala",
+      href: ROUTES.HOME,
       Icon: Home,
     },
     {
       name: "Cart",
-      href: "/shwapno-nurerchala/carts",
+      href: ROUTES.CART,
       Icon: ShoppingCart,
     },
     {
       name: "Orders",
-      href: "/shwapno-nurerchala/order",
+      href: ROUTES.ORDERS,
       Icon: Package,
     },
   ],
