@@ -29,7 +29,13 @@ export interface Order {
   branchId: string;
   orderDate: string;
   totalAmount: string;
-  status: "PENDING" | "PROCESSING" | "COMPLETED" | "CANCELLED";
+  status:
+    | "PENDING"
+    | "PROCESSING"
+    | "DELIVERED"
+    | "COMPLETED"
+    | "CANCELLED"
+    | "RETURNED";
   customer: OrderCustomer;
   items: OrderItem[];
 }
@@ -49,5 +55,13 @@ export interface OrderResponse {
   success: boolean;
   code: number;
   data?: Order;
+  message: string;
+}
+// ... existing interfaces ...
+
+export interface CustomerOrdersResponse {
+  success: boolean;
+  code: number;
+  data: Order[];
   message: string;
 }

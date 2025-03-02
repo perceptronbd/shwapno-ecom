@@ -88,12 +88,20 @@ export default function OrderDetailsPage() {
             <div className="flex items-start justify-end">
               <div
                 className={cn(
-                  "flex w-fit items-center justify-center rounded-full px-2 text-xs",
+                  "flex w-fit items-center justify-center rounded-full border px-2 text-xs",
                   {
-                    "border border-yellow-400 bg-yellow-100 text-yellow-400":
-                      orderDetails.status === "PENDING" || "PROCESSING",
-                    "border border-green-400 bg-green-100 text-green-400":
+                    "border-yellow-400 bg-yellow-100 text-yellow-400":
+                      orderDetails.status === "PENDING",
+                    "border-blue-400 bg-blue-100 text-blue-400":
+                      orderDetails.status === "PROCESSING",
+                    "border-purple-400 bg-purple-100 text-purple-400":
+                      orderDetails.status === "DELIVERED",
+                    "border-green-400 bg-green-100 text-green-400":
                       orderDetails.status === "COMPLETED",
+                    "border-red-400 bg-red-100 text-red-400":
+                      orderDetails.status === "CANCELLED",
+                    "border-orange-400 bg-orange-100 text-orange-400":
+                      orderDetails.status === "RETURNED",
                   },
                 )}
               >

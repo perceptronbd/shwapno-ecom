@@ -9,11 +9,11 @@ import {
   selectCartItems,
   selectCartSessionId,
 } from "@/stores/slices/cart.slice";
-import { LoadingCart } from "./loading-cart";
 import { EmptyCart } from "./empty-cart";
 import { useEffect, useState } from "react";
 import { ROUTES } from "@/utils/routes";
 import { useRouter } from "next/navigation";
+import { LoadingCartSkeleton } from "./loading-cart";
 
 export const MyCart = () => {
   const router = useRouter();
@@ -58,7 +58,7 @@ export const MyCart = () => {
     router.push(ROUTES.CHECKOUT);
   };
 
-  if (isLoading || !isInitialized) return <LoadingCart />;
+  if (isLoading || !isInitialized) return <LoadingCartSkeleton />;
 
   return cartItems.length === 0 ? (
     <EmptyCart />

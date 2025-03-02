@@ -1,5 +1,5 @@
 import Home from "@/components/root/home";
-import { LoadingSkeleton } from "@/components/root/loading-home";
+import { LoadingHomeSkeleton } from "@/components/root/loading-home";
 import { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ProductsPage() {
   return (
     <div className="container mx-auto p-4">
-      <Suspense fallback={<LoadingSkeleton />}>
+      <Suspense fallback={<LoadingHomeSkeleton />}>
         <Home />
       </Suspense>
     </div>

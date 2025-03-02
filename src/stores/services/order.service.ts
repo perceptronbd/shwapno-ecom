@@ -1,4 +1,9 @@
-import { CreateOrderRequest, OrderResponse } from "../states/order.state";
+import {
+  CreateOrderRequest,
+  CustomerOrdersResponse,
+  Order,
+  OrderResponse,
+} from "../states/order.state";
 import { baseApi } from "./base.service";
 import { TAG_TYPES } from "../tagtypes";
 
@@ -21,8 +26,12 @@ export const orderApi = baseApi.injectEndpoints({
         },
       ],
     }),
+    getCustomerOrders: builder.query<Order[], string>({
+      query: (customerId) => `/customers/order/${customerId}`,
+      transformResponse: (response: CustomerOrdersResponse) => response.data,
+      providesTags: [{ type: TAG_TYPES.ORDER, id: "LIST" }],
+    }),
   }),
-  overrideExisting: true,
 });
 
-export const { useCreateOrderMutation } = orderApi;
+export const { useCreateOrderMutation, useGetCustomerOrdersQuery } = orderApi;

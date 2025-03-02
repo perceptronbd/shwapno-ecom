@@ -10,6 +10,7 @@ export const ROUTES = {
   CHECKOUT: `${COMPANY}/carts/checkout`,
   ORDERS: `${COMPANY}/orders`,
   ORDER_DETAILS: (id: string) => `${COMPANY}/orders/${id}`,
+  ORDER_TRACK: (id: string) => `${COMPANY}/orders/track/${id}`,
 } as const;
 
 export type AppRoutes = typeof ROUTES;
