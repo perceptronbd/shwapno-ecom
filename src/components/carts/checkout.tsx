@@ -5,7 +5,12 @@ import {
   CheckoutFormData,
   checkoutSchema,
 } from "@/lib/validations/checkout.schema";
-import { Button, FloatingLabelInput, Text } from "@/shared-components";
+import {
+  Button,
+  CustomToast,
+  FloatingLabelInput,
+  Text,
+} from "@/shared-components";
 import { useAppSelector } from "@/stores/hook";
 import { useCreateOrderMutation } from "@/stores/services/order.service";
 import { selectCartSessionId } from "@/stores/slices/cart.slice";
@@ -14,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export const Checkout = () => {
   const router = useRouter();
@@ -43,7 +49,13 @@ export const Checkout = () => {
 
   const onSubmit = async (data: CheckoutFormData) => {
     if (!sessionId) {
-      console.error("No session ID found");
+      toast(
+        <CustomToast
+          title="Error"
+          description="No session ID found. Please try again."
+          type="error"
+        />,
+      );
       return;
     }
 
@@ -66,12 +78,29 @@ export const Checkout = () => {
       }).unwrap();
 
       if (result.success) {
+        toast(
+          <CustomToast
+            title="Order Placed Successfully!"
+            description="Redirecting to order details..."
+            type="success"
+          />,
+        );
         router.push(
-          `${ROUTES.ORDERS}/${result.data?.id}?orderData=${encodeURIComponent(JSON.stringify(result.data))}`,
+          `${ROUTES.ORDERS}/${result.data?.id}?orderData=${encodeURIComponent(
+            JSON.stringify(result.data),
+          )}`,
         );
       }
     } catch (error) {
-      console.error("Order creation failed:", error);
+      toast(
+        <CustomToast
+          title="Order Creation Failed"
+          description={
+            error instanceof Error ? error.message : "Please try again"
+          }
+          type="error"
+        />,
+      );
     }
   };
 

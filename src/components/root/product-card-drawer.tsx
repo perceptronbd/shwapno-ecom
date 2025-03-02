@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input, Text } from "@/shared-components";
+import { Button, CustomToast, Input, Text } from "@/shared-components";
 import { useAppSelector } from "@/stores/hook";
 import { useAddToCartMutation } from "@/stores/services/cart.service";
 import { selectCartSessionId } from "@/stores/slices/cart.slice";
@@ -10,6 +10,7 @@ import { ImageOff, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   product: Product;
@@ -46,9 +47,23 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
         quantity,
         ...(sessionId && { sessionId }),
       }).unwrap();
+
+      toast(
+        <CustomToast
+          title={"Product Added to Cart!"}
+          description={`Added ${quantity} ${product.name} to your cart.`}
+          type="success"
+        />,
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.log(error.message);
+        toast(
+          <CustomToast
+            title={"Error Adding to Cart!"}
+            description={error.message}
+            type="error"
+          />,
+        );
       }
     }
   };
@@ -60,10 +75,25 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
         quantity,
         ...(sessionId && { sessionId }),
       }).unwrap();
+
+      toast(
+        <CustomToast
+          title={"Product Added to Cart!"}
+          description={`Added ${quantity} ${product.name} to your cart.`}
+          type="success"
+        />,
+      );
+
       router.push(ROUTES.CART);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.log(error.message);
+        toast(
+          <CustomToast
+            title={"Error Adding to Cart!"}
+            description={error.message}
+            type="error"
+          />,
+        );
       }
     }
   };

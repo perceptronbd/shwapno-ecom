@@ -3,6 +3,7 @@ import "./globals.css";
 
 import ReduxProvider from "@/stores/redux-provider";
 import Header from "@/components/root/header";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Shwapno QR",
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className="bg-background-primary">
         <Header />
         <ReduxProvider>{children}</ReduxProvider>
+        <Toaster />
       </body>
     </html>
   );
