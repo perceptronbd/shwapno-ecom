@@ -35,3 +35,12 @@ export interface CartResponse {
   data?: Cart;
   message: string;
 }
+
+export interface UpdateCartItemRequest {
+  productId: string;
+  quantity: number;
+}
+
+export interface UpdateCartRequest {
+  items: UpdateCartItemRequest[];
+}
