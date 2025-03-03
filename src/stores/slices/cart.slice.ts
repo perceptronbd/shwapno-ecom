@@ -45,6 +45,14 @@ export const cartSlice = createSlice({
         },
       )
       .addMatcher(
+        cartApi.endpoints.updateCart.matchFulfilled,
+        (state, { payload }) => {
+          if (payload.data?.items) {
+            state.items = payload.data.items;
+          }
+        },
+      )
+      .addMatcher(
         orderApi.endpoints.createOrder.matchFulfilled,
         (state, { payload }) => {
           state.items = [];

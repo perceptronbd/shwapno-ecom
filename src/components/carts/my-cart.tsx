@@ -1,5 +1,5 @@
 "use client";
-import { Button, Text } from "@/shared-components";
+import { Button, cn, Text } from "@/shared-components";
 import { CartItemRow } from "./carts-item";
 import { useAppDispatch, useAppSelector } from "@/stores/hook";
 import {
@@ -30,11 +30,7 @@ export const MyCart = () => {
 
   const [updateCart] = useUpdateCartMutation();
   const sessionId = useAppSelector(selectCartSessionId);
-  const {
-    data: cartData,
-    isLoading,
-    refetch,
-  } = useGetCartQuery(sessionId!, {
+  const { data: cartData, isLoading } = useGetCartQuery(sessionId!, {
     skip: !sessionId,
   });
   const cartItems = useAppSelector(selectCartItems);
@@ -70,27 +66,31 @@ export const MyCart = () => {
         quantity: itemQuantities[item.id],
       }));
 
-      await updateCart({
+      // Use unwrap to get the actual response
+      const response = await updateCart({
         sessionId,
         data: { items: updatedItems },
       }).unwrap();
 
-      // Refresh cart data after successful update
-      await refetch();
-      setHasQuantityChanged(false);
+      // Update local state with the response data immediately
+      if (response.data?.items) {
+        const updatedQuantities = response.data.items.reduce(
+          (acc, item) => {
+            acc[item.id] = item.quantity;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
+
+        setItemQuantities(updatedQuantities);
+        setHasQuantityChanged(false);
+      }
     } catch (error) {
       console.error("Failed to update cart:", error);
     } finally {
       setIsSaving(false);
     }
-  }, [
-    sessionId,
-    cartItems,
-    itemQuantities,
-    hasQuantityChanged,
-    updateCart,
-    refetch,
-  ]);
+  }, [sessionId, cartItems, itemQuantities, hasQuantityChanged, updateCart]);
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     if (newQuantity <= 0) return;
@@ -110,9 +110,12 @@ export const MyCart = () => {
     router.push(ROUTES.CHECKOUT);
   };
 
-  const totalPrice = cartItems.reduce((total, item) => {
-    return total + parseFloat(item.price.toString()) * itemQuantities[item.id];
-  }, 0);
+  const totalPrice =
+    cartItems?.reduce((total, item) => {
+      // Check if item.price exists and is valid
+      const price = item?.price ? parseFloat(item.price.toString()) : 0;
+      return total + price;
+    }, 0) || 0; // Fallback if cartItems is undefined
 
   if (isLoading || !isInitialized) return <LoadingCartSkeleton />;
 
@@ -130,9 +133,9 @@ export const MyCart = () => {
         <section className="space-y-2">
           {cartItems.map((item) => (
             <CartItemRow
-              key={item.id}
+              key={item.productId}
               item={item}
-              quantity={itemQuantities[item.id]}
+              quantity={itemQuantities[item.id] ?? 1}
               onQuantityChange={(newQuantity) =>
                 handleQuantityChange(item.id, newQuantity)
               }
@@ -161,13 +164,16 @@ export const MyCart = () => {
         </div>
         <nav>
           <Button
-            className="w-full"
+            className={cn("w-full", {
+              "bg-wite border border-secondary-400 text-secondary-400 shadow-lg shadow-secondary-400/10":
+                hasQuantityChanged,
+            })}
             size="lg"
             onClick={hasQuantityChanged ? saveCartChanges : handlePlaceOrder}
             disabled={isSaving}
             loading={isSaving}
           >
-            {hasQuantityChanged ? "Save Changes First" : "Place Order"}
+            {hasQuantityChanged ? "Save Changes " : "Place Order"}
           </Button>
         </nav>
       </footer>
