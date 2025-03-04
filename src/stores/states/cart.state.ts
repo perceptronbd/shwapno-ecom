@@ -44,3 +44,14 @@ export interface UpdateCartItemRequest {
 export interface UpdateCartRequest {
   items: UpdateCartItemRequest[];
 }
+
+export interface DeleteCartItemRequest {
+  productId: string;
+}
+
+export interface DeleteCartItemResponse {
+  success: boolean;
+  code: number;
+  data: null;
+  message: string;
+}

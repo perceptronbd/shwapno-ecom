@@ -1,7 +1,12 @@
+"use client";
 import { Button, Input, Text } from "@/shared-components";
+import { useAppSelector } from "@/stores/hook";
+import { useDeleteCartItemMutation } from "@/stores/services/cart.service";
+import { selectCartSessionId } from "@/stores/slices/cart.slice";
 import { CartItem } from "@/stores/states/cart.state";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface CartItemRowProps {
   item: CartItem;
@@ -14,6 +19,8 @@ export const CartItemRow = ({
   quantity,
   onQuantityChange,
 }: CartItemRowProps) => {
+  const sessionId = useAppSelector(selectCartSessionId);
+  const [deleteItem, { isLoading: isDeleting }] = useDeleteCartItemMutation();
   const handleIncrement = () => {
     onQuantityChange(quantity + 1);
   };
@@ -28,6 +35,21 @@ export const CartItemRow = ({
     const value = parseInt(e.target.value);
     if (value >= 1) {
       onQuantityChange(value);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!sessionId) return;
+
+    try {
+      const response = await deleteItem({
+        sessionId,
+        productId: item.productId,
+      }).unwrap();
+
+      toast.success("Item removed from cart");
+    } catch (error) {
+      toast.error("Failed to remove item from cart");
     }
   };
 
@@ -59,7 +81,11 @@ export const CartItemRow = ({
       </section>
 
       <section className="flex h-full flex-col items-end justify-between gap-4">
-        <button className="text-red-400">
+        <button
+          className="text-red-400"
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
           <Trash2 size={20} />
         </button>
         <fieldset className="flex items-center gap-4">

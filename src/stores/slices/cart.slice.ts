@@ -37,7 +37,7 @@ export const cartSlice = createSlice({
         },
       )
       .addMatcher(
-        cartApi.endpoints.getCart.matchFulfilled,
+        cartApi.endpoints.updateCart.matchFulfilled,
         (state, { payload }) => {
           if (payload.data?.items) {
             state.items = payload.data.items;
@@ -45,10 +45,12 @@ export const cartSlice = createSlice({
         },
       )
       .addMatcher(
-        cartApi.endpoints.updateCart.matchFulfilled,
+        cartApi.endpoints.getCart.matchFulfilled,
         (state, { payload }) => {
           if (payload.data?.items) {
             state.items = payload.data.items;
+          } else {
+            state.items = [];
           }
         },
       )

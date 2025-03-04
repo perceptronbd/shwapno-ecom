@@ -1,6 +1,7 @@
 import {
   AddToCartRequest,
   CartResponse,
+  DeleteCartItemResponse,
   UpdateCartRequest,
 } from "@/stores/states/cart.state";
 import { baseApi } from "./base.service";
@@ -50,8 +51,23 @@ export const cartApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [{ type: TAG_TYPES.CART, id: "LIST" }],
     }),
+    deleteCartItem: builder.mutation<
+      DeleteCartItemResponse,
+      { sessionId: string; productId: string }
+    >({
+      query: ({ sessionId, productId }) => ({
+        url: `/customers/cart/item/${sessionId}`,
+        method: "DELETE",
+        body: { productId },
+      }),
+      invalidatesTags: [{ type: TAG_TYPES.CART, id: "LIST" }],
+    }),
   }),
 });
 
-export const { useAddToCartMutation, useGetCartQuery, useUpdateCartMutation } =
-  cartApi;
+export const {
+  useAddToCartMutation,
+  useGetCartQuery,
+  useUpdateCartMutation,
+  useDeleteCartItemMutation,
+} = cartApi;
