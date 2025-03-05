@@ -19,6 +19,12 @@ export interface Cart {
   items: CartItem[];
 }
 
+export interface CartState {
+  sessionId: string | null;
+  customerId: string | null;
+  items: CartItem[];
+}
+
 export type CartResponse = ApiResponse<Cart>;
 export type DeleteCartItemResponse = ApiResponse<null>;
 
