@@ -1,24 +1,25 @@
+// services/cart.service.ts
+import { ApiResponse } from "@/lib/types/api";
+import { baseApi } from "./base.service";
 import {
   AddToCartRequest,
-  CartResponse,
-  DeleteCartItemResponse,
+  Cart,
   UpdateCartRequest,
-} from "@/stores/states/cart.state";
-import { baseApi } from "./base.service";
+} from "../states/cart.state";
 import { TAG_TYPES } from "../tagtypes";
 
 export const cartApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    addToCart: builder.mutation<CartResponse, AddToCartRequest>({
+    addToCart: builder.mutation<ApiResponse<Cart>, AddToCartRequest>({
       query: (body) => ({ url: "/customers/cart", method: "PUT", body }),
       invalidatesTags: [{ type: TAG_TYPES.CART, id: "LIST" }],
     }),
-    getCart: builder.query<CartResponse, string>({
+    getCart: builder.query<ApiResponse<Cart>, string>({
       query: (sessionId) => `/customers/cart/${sessionId}`,
       providesTags: [{ type: TAG_TYPES.CART, id: "LIST" }],
     }),
     updateCart: builder.mutation<
-      CartResponse,
+      ApiResponse<Cart>,
       { sessionId: string; data: UpdateCartRequest }
     >({
       query: ({ sessionId, data }) => ({
@@ -26,6 +27,7 @@ export const cartApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
+      // Update the optimistic update with proper typing
       onQueryStarted: async (
         { sessionId, data },
         { dispatch, queryFulfilled },
@@ -34,7 +36,6 @@ export const cartApi = baseApi.injectEndpoints({
           cartApi.util.updateQueryData("getCart", sessionId, (draft) => {
             if (draft?.data?.items) {
               draft.data.items = draft.data.items.map((item) => {
-                // Match by productId (NOT id) since the request uses productId
                 const updated = data.items.find(
                   (i) => i.productId === item.productId,
                 );
@@ -52,7 +53,7 @@ export const cartApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: TAG_TYPES.CART, id: "LIST" }],
     }),
     deleteCartItem: builder.mutation<
-      DeleteCartItemResponse,
+      ApiResponse<null>,
       { sessionId: string; productId: string }
     >({
       query: ({ sessionId, productId }) => ({
@@ -64,7 +65,6 @@ export const cartApi = baseApi.injectEndpoints({
     }),
   }),
 });
-
 export const {
   useAddToCartMutation,
   useGetCartQuery,

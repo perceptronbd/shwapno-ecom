@@ -1,5 +1,6 @@
 "use client";
 
+import { isApiResponseError } from "@/lib/types/api";
 import { Button, CustomToast, Input, Text } from "@/shared-components";
 import { useAppSelector } from "@/stores/hook";
 import { useAddToCartMutation } from "@/stores/services/cart.service";
@@ -86,11 +87,19 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
 
       router.push(ROUTES.CART);
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (isApiResponseError(error)) {
         toast(
           <CustomToast
             title={"Error Adding to Cart!"}
             description={error.message}
+            type="error"
+          />,
+        );
+      } else {
+        toast(
+          <CustomToast
+            title={"Error Adding to Cart!"}
+            description={"Something went wrong"}
             type="error"
           />,
         );

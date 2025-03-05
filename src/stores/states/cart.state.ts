@@ -1,3 +1,4 @@
+import { ApiResponse } from "@/lib/types/api";
 import { Product } from "./product.state";
 
 export interface CartItem {
@@ -5,35 +6,27 @@ export interface CartItem {
   cartId: string;
   productId: string;
   quantity: number;
-  price: number;
+  price: string; // Changed to string to match backend
   product: Product;
 }
 
 export interface Cart {
   id: string;
   sessionId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  items: CartItem[];
-}
-
-export interface CartState {
-  sessionId: string | null;
   customerId: string | null;
+  createdAt: string;
+  updatedAt: string;
   items: CartItem[];
 }
 
+export type CartResponse = ApiResponse<Cart>;
+export type DeleteCartItemResponse = ApiResponse<null>;
+
+// Update request types
 export interface AddToCartRequest {
   productId: string;
   quantity: number;
   sessionId?: string;
-}
-
-export interface CartResponse {
-  success: boolean;
-  code: number;
-  data?: Cart;
-  message: string;
 }
 
 export interface UpdateCartItemRequest {
@@ -43,15 +36,4 @@ export interface UpdateCartItemRequest {
 
 export interface UpdateCartRequest {
   items: UpdateCartItemRequest[];
-}
-
-export interface DeleteCartItemRequest {
-  productId: string;
-}
-
-export interface DeleteCartItemResponse {
-  success: boolean;
-  code: number;
-  data: null;
-  message: string;
 }

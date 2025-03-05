@@ -1,26 +1,20 @@
-import { Product } from "./product.state";
-
 export interface OrderCustomer {
-  id?: string;
   firstName: string;
   lastName: string;
   email: string;
   mobile: string;
   address: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface OrderItem {
-  id: string;
-  orderId: string;
   productId: string;
   quantity: number;
-  imgURL?: string;
   price: string;
-  createdAt: string;
-  updatedAt: string;
-  product: Product;
+  product: {
+    id: string;
+    name: string;
+    imgURL?: string;
+  };
 }
 
 export interface Order {
@@ -38,30 +32,11 @@ export interface Order {
     | "RETURNED";
   customer: OrderCustomer;
   items: OrderItem[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateOrderRequest {
-  customer: {
-    address: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    mobile: string;
-  };
+  customer: OrderCustomer;
   sessionId: string;
-}
-
-export interface OrderResponse {
-  success: boolean;
-  code: number;
-  data?: Order;
-  message: string;
-}
-// ... existing interfaces ...
-
-export interface CustomerOrdersResponse {
-  success: boolean;
-  code: number;
-  data: Order[];
-  message: string;
 }

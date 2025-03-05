@@ -1,16 +1,16 @@
+import { ApiResponse } from "@/lib/types/api";
+
 export interface Product {
   id: string;
   barcode: string | null;
   name: string;
-  description: string | null;
-  price: string;
   imgURL: string | null;
+  imgPublicId: string | null;
+  description: string;
+  price: string;
   category: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface ProductResponse {
-  success: boolean;
-  code: number;
-  data: Product[];
-  message: string;
-}
+export type ProductResponse = ApiResponse<Product[]>;
