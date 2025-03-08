@@ -1,6 +1,6 @@
+import { Product } from "@/stores/states/product.state";
 import { useDebounce } from "./useDebounce";
 import { useState, useMemo } from "react";
-import { Product } from "@/lib/types/products";
 
 export const useProducts = (products: Product[] | undefined) => {
   const [searchTerm, setSearchTerm] = useState("");
