@@ -111,14 +111,14 @@ export default function OrderDetailsPage() {
             <div className="col-span-3">
               {orderDetails.items.map((item) => (
                 <div
-                  key={item.id}
+                  key={item?.productId}
                   className="flex items-center justify-between rounded-md border p-2"
                 >
                   <div className="flex gap-2">
                     <figure className="relative aspect-square size-14">
-                      {item.imgURL ? (
+                      {item.product.imgURL ? (
                         <Image
-                          src={item.imgURL}
+                          src={item.product.imgURL}
                           alt={item.product.name}
                           width={20}
                           height={20}

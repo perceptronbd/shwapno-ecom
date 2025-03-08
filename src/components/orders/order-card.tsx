@@ -54,7 +54,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
         <div className="space-y-2">
           {order.items.map((item) => (
             <div
-              key={item.id}
+              key={item.productId}
               className="flex items-center justify-between rounded-md border p-2"
             >
               <div className="flex gap-2">

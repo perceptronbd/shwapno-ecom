@@ -47,8 +47,10 @@ export const CartItemRow = ({
         productId: item.productId,
       }).unwrap();
 
+      console.log(response);
       toast.success("Item removed from cart");
     } catch (error) {
+      console.error(error);
       toast.error("Failed to remove item from cart");
     }
   };
