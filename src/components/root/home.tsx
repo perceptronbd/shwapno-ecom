@@ -1,6 +1,5 @@
 "use client";
 
-import { BRANCH_ID } from "@/lib/constants";
 import { useGetBranchProductsQuery } from "@/stores/services/product.service";
 import {
   Tabs,
@@ -16,24 +15,31 @@ import { ProductCard } from "./product-card";
 import { useEffect, useState } from "react";
 import { ProductCardDrawer } from "./product-card-drawer";
 import { Product } from "@/stores/states/product.state";
-import { useAppDispatch } from "@/stores/hook";
+import { useAppDispatch, useAppSelector } from "@/stores/hook";
 import { initializeCart } from "@/stores/slices/cart.slice";
+import { usePathname } from "next/navigation";
+import { useGetBranchByNameQuery } from "@/stores/services/branch.service";
+import { selectBranchId, setBranch } from "@/stores/slices/branch.slice";
 
 const Home = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  const pathname = usePathname();
+  const branchName = pathname.split("/").pop();
+  const { data: branchData } = useGetBranchByNameQuery(branchName!, {
+    skip: !branchName,
+  });
+
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(initializeCart());
-  }, [dispatch]);
+  const branchId = useAppSelector(selectBranchId);
 
   const {
     data: products,
     isLoading: productsLoading,
     error: productsError,
-  } = useGetBranchProductsQuery(BRANCH_ID);
+  } = useGetBranchProductsQuery(branchId);
 
   const {
     searchTerm,
@@ -41,9 +47,17 @@ const Home = () => {
     setActiveCategory,
     categories,
     filteredProducts,
-    // searchResults,
-    // debouncedSearch,
   } = useProducts(products);
+
+  useEffect(() => {
+    if (branchData?.data?.id) {
+      dispatch(setBranch(branchData.data));
+    }
+  }, [branchData, dispatch]);
+
+  useEffect(() => {
+    dispatch(initializeCart());
+  }, [dispatch]);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);

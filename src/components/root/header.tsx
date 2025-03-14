@@ -1,15 +1,20 @@
 "use client";
 
-import { navLinks } from "@/lib/navlinks";
+import { getNavLinks } from "@/lib/navlinks";
 import { Sidebar } from "@/shared-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import TopBar from "./top-bar";
+import { useAppSelector } from "@/stores/hook";
+import { selectBranchName } from "@/stores/slices/branch.slice";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const branchName = useAppSelector(selectBranchName);
+  const navLinks = getNavLinks(branchName);
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);

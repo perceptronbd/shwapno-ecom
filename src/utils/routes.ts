@@ -1,17 +1,14 @@
 export const ROOT = "/";
 
-const COMPANY = "/shwapno-nurerchala";
-
 export const ROUTES = {
   ROOT,
-  COMPANY,
-  HOME: `${COMPANY}`,
-  CART: `${COMPANY}/carts`,
-  CHECKOUT: `${COMPANY}/carts/checkout`,
-  ORDERS: `${COMPANY}/orders`,
-  ORDER_DETAILS: (id: string) => `${COMPANY}/orders/${id}`,
-  ORDER_TRACK: (id: string) => `${COMPANY}/orders/track/${id}`,
+  COMPANY: (branchName: string) => `/${branchName}`,
+  HOME: (branchName: string) => ROUTES.COMPANY(branchName),
+  CART: (branchName: string) => `${ROUTES.COMPANY(branchName)}/carts`,
+  CHECKOUT: (branchName: string) => `${ROUTES.CART(branchName)}/checkout`,
+  ORDERS: (branchName: string) => `${ROUTES.COMPANY(branchName)}/orders`,
+  ORDER_DETAILS: (branchName: string, id: string) =>
+    `${ROUTES.ORDERS(branchName)}/${id}`,
+  ORDER_TRACK: (branchName: string, id: string) =>
+    `${ROUTES.ORDERS(branchName)}/track/${id}`,
 } as const;
-
-export type AppRoutes = typeof ROUTES;
-export type RouteKeys = keyof AppRoutes;

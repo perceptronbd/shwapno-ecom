@@ -4,6 +4,7 @@ import { isApiResponseError } from "@/lib/types/api";
 import { Button, CustomToast, Input, Text } from "@/shared-components";
 import { useAppSelector } from "@/stores/hook";
 import { useAddToCartMutation } from "@/stores/services/cart.service";
+import { selectBranchName } from "@/stores/slices/branch.slice";
 import { selectCartSessionId } from "@/stores/slices/cart.slice";
 import { Product } from "@/stores/states/product.state";
 import { ROUTES } from "@/utils/routes";
@@ -22,6 +23,7 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1);
 
   const sessionId = useAppSelector(selectCartSessionId);
+  const branchName = useAppSelector(selectBranchName);
   const [addToCart, { isLoading }] = useAddToCartMutation();
 
   const handleIncrement = () => {
@@ -85,7 +87,7 @@ export const ProductCardDrawer = ({ product }: ProductCardProps) => {
         />,
       );
 
-      router.push(ROUTES.CART);
+      router.push(ROUTES.CART(branchName));
     } catch (error: unknown) {
       if (isApiResponseError(error)) {
         toast(

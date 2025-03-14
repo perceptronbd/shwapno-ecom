@@ -1,6 +1,5 @@
 "use client";
 
-import { BRANCH_ID } from "@/lib/constants";
 import {
   CheckoutFormData,
   checkoutSchema,
@@ -13,6 +12,7 @@ import {
 } from "@/shared-components";
 import { useAppSelector } from "@/stores/hook";
 import { useCreateOrderMutation } from "@/stores/services/order.service";
+import { selectBranchId, selectBranchName } from "@/stores/slices/branch.slice";
 import { selectCartSessionId } from "@/stores/slices/cart.slice";
 import { ROUTES } from "@/utils/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +23,10 @@ import { toast } from "sonner";
 
 export const Checkout = () => {
   const router = useRouter();
+
+  const branchId = useAppSelector(selectBranchId);
+  const branchName = useAppSelector(selectBranchName);
+
   const sessionId = useAppSelector(selectCartSessionId);
   const [createOrder, { isLoading }] = useCreateOrderMutation();
 
@@ -64,7 +68,7 @@ export const Checkout = () => {
       const lastName = lastNameParts.join(" ") || firstName;
 
       const result = await createOrder({
-        branchId: BRANCH_ID,
+        branchId: branchId,
         data: {
           customer: {
             firstName,
@@ -86,7 +90,7 @@ export const Checkout = () => {
           />,
         );
         router.push(
-          `${ROUTES.ORDERS}/${result.data?.id}?orderData=${encodeURIComponent(
+          `${ROUTES.ORDERS(branchName)}/${result.data?.id}?orderData=${encodeURIComponent(
             JSON.stringify(result.data),
           )}`,
         );
