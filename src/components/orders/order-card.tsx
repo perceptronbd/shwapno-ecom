@@ -1,5 +1,7 @@
 "use client";
 import { cn, Text } from "@/shared-components";
+import { useAppSelector } from "@/stores/hook";
+import { selectBranchName } from "@/stores/slices/branch.slice";
 import { Order } from "@/stores/states/order.state";
 import { ROUTES } from "@/utils/routes";
 import { ImageOff } from "lucide-react";
@@ -13,6 +15,8 @@ interface OrderCardProps {
 export const OrderCard = ({ order }: OrderCardProps) => {
   const router = useRouter();
 
+  const branchName = useAppSelector(selectBranchName);
+
   return (
     <button
       key={order.id}
@@ -21,7 +25,7 @@ export const OrderCard = ({ order }: OrderCardProps) => {
         "cursor-not-allowed opacity-60":
           order.status === "CANCELLED" || order.status === "RETURNED",
       })}
-      onClick={() => router.push(ROUTES.ORDER_TRACK(order.id))}
+      onClick={() => router.push(ROUTES.ORDER_TRACK(branchName, order.id))}
     >
       <article className="rounded-md bg-white p-4 hover:bg-neutral-50">
         <header className="mb-4 flex items-center justify-between">

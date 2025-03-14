@@ -24,8 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-background-primary">
-        <Header />
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          <Header />
+          {children}
+        </ReduxProvider>
         <Toaster />
       </body>
     </html>

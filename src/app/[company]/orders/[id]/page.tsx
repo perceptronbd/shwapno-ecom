@@ -1,6 +1,8 @@
 "use client";
 
 import { Button, cn, Text } from "@/shared-components";
+import { useAppSelector } from "@/stores/hook";
+import { selectBranchName } from "@/stores/slices/branch.slice";
 import { Order } from "@/stores/states/order.state";
 import { ROUTES } from "@/utils/routes";
 import { ImageOff } from "lucide-react";
@@ -10,6 +12,7 @@ import { useEffect, useState } from "react";
 
 export default function OrderDetailsPage() {
   const router = useRouter();
+  const branchName = useAppSelector(selectBranchName);
   const searchParams = useSearchParams();
   const [orderDetails, setOrderDetails] = useState<Order | null>(null);
 
@@ -23,7 +26,7 @@ export default function OrderDetailsPage() {
   if (!orderDetails) return null;
 
   const handleOK = () => {
-    router.replace(ROUTES.HOME);
+    router.replace(ROUTES.HOME(branchName));
   };
 
   return (

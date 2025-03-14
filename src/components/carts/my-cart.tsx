@@ -16,10 +16,13 @@ import { useEffect, useState, useCallback } from "react";
 import { ROUTES } from "@/utils/routes";
 import { useRouter } from "next/navigation";
 import { LoadingCartSkeleton } from "./loading-cart";
+import { selectBranchName } from "@/stores/slices/branch.slice";
 
 export const MyCart = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const branchName = useAppSelector(selectBranchName);
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [itemQuantities, setItemQuantities] = useState<Record<string, number>>(
@@ -107,7 +110,8 @@ export const MyCart = () => {
     if (hasQuantityChanged) {
       await saveCartChanges();
     }
-    router.push(ROUTES.CHECKOUT);
+
+    router.push(ROUTES.CHECKOUT(branchName));
   };
 
   const totalPrice =
